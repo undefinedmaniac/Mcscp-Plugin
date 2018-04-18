@@ -6,13 +6,18 @@ import com.gmail.undifinedmaniac.mcscpplugin.command.McscpCommandProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import org.apache.logging.log4j.LogManager;
+
 /**
  * This is the core class for the plugin, it enables and disables
  * all the other parts of the plugin
  */
 public final class McscpPlugin extends JavaPlugin {
 
+    private static final org.apache.logging.log4j.core.Logger kLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+
     private McscpTcpServer mServer = null;
+    private LogAppender mAppender;
 
     private static float tps;
 
@@ -21,6 +26,9 @@ public final class McscpPlugin extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        mAppender = new LogAppender(this);
+        kLogger.addAppender(mAppender);
+
         //Init the command processor so that it is ready to handle commands
         McscpCommandProcessor.initialize(this);
 
@@ -62,8 +70,18 @@ public final class McscpPlugin extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        kLogger.removeAppender(mAppender);
+
         if (mServer != null)
             mServer.stop();
+    }
+
+    public LogAppender getAppender() {
+        return mAppender;
+    }
+
+    public void logEvent(String newData) {
+        mServer.logEvent(newData);
     }
 
     /**

@@ -14,8 +14,6 @@ import java.net.SocketAddress;
  */
 public class McscpCommandProcessor {
 
-    private static final Pattern FLAG_PATTERN = Pattern.compile("^SETFLAG:(.+):(.+)$");
-
     private static McscpCommandProcessor kProcessor = null;
     private static IMcscpCommandInterface kInterface = null;
     private static McscpPlugin kPlugin = null;
@@ -48,18 +46,18 @@ public class McscpCommandProcessor {
     public void processCommand(McscpCommand command) {
         switch (command.getType()) {
             case Console: {
-                String consoleCmd = command.getData().get(0).substring(4);
+                String consoleCmd = command.getMatcher().group(1);
                 command.setReply(kInterface.sendConsoleCmd(consoleCmd));
                 break;
             }
             case Chat: {
-                String username = command.getData().get(0).substring(5);
-                String message = command.getData().get(1).substring(8);
+                String username = command.getMatcher().group(1);
+                String message = command.getMatcher().group(2);
                 kInterface.sendChatMessage(username, message);
                 break;
             }
             case Broadcast: {
-                kInterface.broadcastMessage(command.getData().get(0).substring(10));
+                kInterface.broadcastMessage(command.getMatcher().group(1));
                 break;
             }
             case GetMaxPlayers: {
@@ -75,18 +73,29 @@ public class McscpCommandProcessor {
             case GetPlayerList: {
                 Collection<String> playerNames = kInterface.getPlayerList();
                 StringBuilder builder = new StringBuilder();
-                builder.append("BEGINPLAYERLIST\r\n");
-                for (String name : playerNames) {
-                    builder.append(name);
-                    builder.append("\r\n");
-                }
-                builder.append("ENDPLAYERLIST");
+                builder.append("[PLAYERLIST]");
+                for (String name : playerNames)
+                    builder.append(String.format(":[%s]", name));
+
                 command.setReply(builder.toString());
                 break;
             }
             case GetPlayerReport: {
-                String playerName = command.getData().get(0).substring(16);
-                command.setReply(kInterface.getPlayerReport(playerName));
+                String playerName = command.getMatcher().group(1);
+
+                PlayerReport report = kInterface.getPlayerReport(playerName);
+
+                StringBuilder builder = new StringBuilder();
+                builder.append("[PLAYERREPORT]:");
+                builder.append(String.format("[NAME:%s]:", report.name));
+                builder.append(String.format("[IP:%s]:", report.ip));
+                builder.append(String.format("[MAXHEALTH:%s]:", report.maxHealth));
+                builder.append(String.format("[HEALTH:%s]:", report.health));
+                builder.append(String.format("[HUNGER:%s]:", report.hunger));
+                builder.append(String.format("[LEVEL:%s]:", report.level));
+                builder.append(String.format("[WORLD:%s]", report.world));
+
+                command.setReply(builder.toString());
                 break;
             }
             case GetTps: {
@@ -96,18 +105,13 @@ public class McscpCommandProcessor {
             }
             case GetPerformanceReport: {
                 StringBuilder builder = new StringBuilder();
-                builder.append("BEGINPERFORMANCEREPORT");
-                builder.append("\r\nTPS:");
-                builder.append(kInterface.getTps());
-                builder.append("\r\nMAXRAM:");
-                builder.append(kInterface.getMaxRam());
-                builder.append("\r\nTOTALRAM:");
-                builder.append(kInterface.getTotalRam());
-                builder.append("\r\nFREERAM:");
-                builder.append(kInterface.getFreeRam());
-                builder.append("\r\nUSEDRAM:");
-                builder.append(kInterface.getUsedRam());
-                builder.append("\r\nENDPERFORMANCEREPORT");
+                builder.append("[PERFORMANCEREPORT]:");
+                builder.append(String.format("[TPS:%s]:", kInterface.getTps()));
+                builder.append(String.format("[MAXRAM:%s]:", kInterface.getMaxRam()));
+                builder.append(String.format("[TOTALRAM:%s]:", kInterface.getTotalRam()));
+                builder.append(String.format("[FREERAM:%s]:", kInterface.getFreeRam()));
+                builder.append(String.format("[USEDRAM:%s]", kInterface.getUsedRam()));
+
                 command.setReply(builder.toString());
                 break;
             }
@@ -136,6 +140,11 @@ public class McscpCommandProcessor {
                 command.setReply(kInterface.getMotd());
                 break;
             }
+            case GetLog: {
+                command.setReply(String.format("[LOG]:[DATA:%s]",
+                        kPlugin.getAppender().getEntireLog()));
+                break;
+            }
             case Stop: {
                 kInterface.stop();
                 break;
@@ -143,59 +152,62 @@ public class McscpCommandProcessor {
             case SetFlag: {
                 boolean success = false;
 
-                Matcher flagMatcher = FLAG_PATTERN.matcher(command.getData().get(0));
-                if (flagMatcher.find()) {
-                    String flagNameString = flagMatcher.group(1).toUpperCase();
-                    String flagValueString = flagMatcher.group(2).toUpperCase();
+                Matcher flagMatcher = command.getMatcher();
+                String flagNameString = flagMatcher.group(1).toUpperCase();
+                String flagValueString = flagMatcher.group(2).toUpperCase();
 
-                    McscpClient.Flag flagName;
-                    switch (flagNameString) {
-                        case "REPORTPLAYERJOIN": {
-                            flagName = McscpClient.Flag.ReportPlayerJoin;
+                McscpClient.Flag flagName;
+                switch (flagNameString) {
+                    case "REPORTPLAYERJOIN": {
+                        flagName = McscpClient.Flag.ReportPlayerJoin;
+                        break;
+                    }
+                    case "REPORTPLAYERLEAVE": {
+                        flagName = McscpClient.Flag.ReportPlayerLeave;
+                        break;
+                    }
+                    case "CMDRESPONSE": {
+                        flagName = McscpClient.Flag.CmdResponse;
+                        break;
+                    }
+                    case "REPORTCHATUPDATE": {
+                        flagName = McscpClient.Flag.ReportChatUpdate;
+                        break;
+                    }
+                    case "REPORTPLAYERDEATH": {
+                        flagName = McscpClient.Flag.ReportPlayerDeath;
+                        break;
+                    }
+                    case "SENDSERVERLOG": {
+                        flagName = McscpClient.Flag.SendServerLog;
+                        break;
+                    }
+                    default: {
+                        flagName = null;
+                        break;
+                    }
+                }
+
+                if (flagName != null) {
+                    Boolean flagValue;
+                    switch (flagValueString) {
+                        case "TRUE": {
+                            flagValue = true;
                             break;
                         }
-                        case "REPORTPLAYERLEAVE": {
-                            flagName = McscpClient.Flag.ReportPlayerLeave;
-                            break;
-                        }
-                        case "CMDRESPONSE": {
-                            flagName = McscpClient.Flag.CmdResponse;
-                            break;
-                        }
-                        case "REPORTCHATUPDATE": {
-                            flagName = McscpClient.Flag.ReportChatUpdate;
-                            break;
-                        }
-                        case "REPORTPLAYERDEATH": {
-                            flagName = McscpClient.Flag.ReportPlayerDeath;
+                        case "FALSE": {
+                            flagValue = false;
                             break;
                         }
                         default: {
-                            flagName = null;
+                            flagValue = null;
                             break;
                         }
                     }
 
-                    if (flagName != null) {
-                        Boolean flagValue;
-                        switch (flagValueString) {
-                            case "TRUE": {
-                                flagValue = true;
-                                break;
-                            }
-                            case "FALSE": {
-                                flagValue = false;
-                                break;
-                            }
-                            default: {
-                                flagValue = null;
-                            }
-                        }
-
-                        if (flagValue != null) {
-                            command.getClient().setFlag(flagName, flagValue);
-                            success = true;
-                        }
+                    if (flagValue != null) {
+                        command.getClient().setFlag(flagName, flagValue);
+                        success = true;
                     }
                 }
 
@@ -204,7 +216,7 @@ public class McscpCommandProcessor {
                 break;
             }
             case Ping: {
-                command.setReply("PONG");
+                command.setReply("[PONG]");
                 break;
             }
             default: {

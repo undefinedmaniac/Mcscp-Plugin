@@ -145,6 +145,11 @@ public class McscpTcpServer extends BukkitRunnable {
         mClients.remove(client.key());
     }
 
+    public void logEvent(String newData) {
+        for (McscpClient client : mClients.values())
+            client.logEvent(newData);
+    }
+
     /**
      * Accept an incoming connection
      * @param key the key which received the event
@@ -161,7 +166,7 @@ public class McscpTcpServer extends BukkitRunnable {
             SelectionKey clientKey = channel.register(mSelector, SelectionKey.OP_READ);
             McscpClient client = new McscpClient(this, channel, clientKey);
             mClients.put(clientKey, client);
-            client.startSession();
+            client.startHandshake();
         } catch (IOException error) {
             mPlugin.printMsg("ERROR: IOException while accepting client connection");
         }

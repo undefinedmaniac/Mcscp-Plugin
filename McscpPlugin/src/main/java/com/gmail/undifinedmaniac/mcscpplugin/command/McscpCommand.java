@@ -1,9 +1,12 @@
 package com.gmail.undifinedmaniac.mcscpplugin.command;
 
 import com.gmail.undifinedmaniac.mcscpplugin.network.McscpClient;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents a command from an MCSCP client
@@ -13,23 +16,26 @@ public class McscpCommand {
     public enum CommandType {
         Console, Chat, Broadcast, GetMaxPlayers, GetPlayerCount, GetPlayerList,
         GetPlayerReport, GetTps, GetPerformanceReport, GetMaxRam, GetTotalRam,
-        GetFreeRam, GetUsedRam, GetMotd, Stop, SetFlag, Ping, Unknown
+        GetFreeRam, GetUsedRam, GetMotd, GetLog, Stop, SetFlag, Ping, Unknown
     }
+
+    private static Pattern CONSOLE_PATTERN = Pattern.compile("(?i)\\[CMD]:\\[CONTENT:(.*)]"),
+                           CHAT_PATTERN = Pattern.compile("(?i)\\[MSG]:\\[SENDER:(.*?)]:\\[CONTENT:(.*)]"),
+                           BROADCAST_PATTERN = Pattern.compile("(?i)\\[BROADCAST]:\\[CONTENT:(.*)]"),
+                           PLAYER_REPORT_PATTERN = Pattern.compile("(?i)\\[REQUEST]:\\[TYPE:PLAYERREPORT]:\\[PLAYER:(.*)]"),
+                           SET_FLAG_PATTERN = Pattern.compile("(?i)\\[SETFLAG]:\\[NAME:(.*)]:\\[VALUE:(.*)]");
 
     private McscpClient mClient;
     private CommandType mType;
-    private List<String> mData;
-    private String mReply;
-    private boolean mReady;
+    private String mData, mReply;
+    private Matcher mMatcher;
 
     public McscpCommand(McscpClient client, String data) {
         mClient = client;
-        mData = new ArrayList<>();
+        mData = data;
         mReply = null;
 
-        mData.add(data);
         mType = detectCommandType();
-        mReady = checkIfReady();
     }
 
     /**
@@ -49,26 +55,19 @@ public class McscpCommand {
     }
 
     /**
-     * Add data to the command in the case that
-     * data must come in multiple chunks
-     * @param data
-     */
-    public void addData(String data) {
-        if (checkNewData(data)) {
-            mData.add(data);
-            mReady = checkIfReady();
-        } else {
-            mType = CommandType.Unknown;
-            mReady = true;
-        }
-    }
-
-    /**
      * Gets all data for this command
      * @return the data
      */
-    public List<String> getData() {
+    public String getData() {
         return mData;
+    }
+
+    /**
+     * Gets the matcher for this command
+     * @return The matcher
+     */
+    public Matcher getMatcher() {
+        return mMatcher;
     }
 
     /**
@@ -96,88 +95,72 @@ public class McscpCommand {
     }
 
     /**
-     * Checks if this command has enough data to be executed
-     * @return true if the command is ready, false otherwise
-     */
-    public boolean isReady() {
-        return mReady;
-    }
-
-    /**
-     * Verify if newly added data is what was expected
-     * @param data the new data
-     * @return true if it was expected, false otherwise
-     */
-    private boolean checkNewData(String data) {
-        switch (mType) {
-            case Chat: {
-                return data.startsWith("CONTENT:");
-            }
-            default: {
-                return false;
-            }
-        }
-    }
-
-    /**
      * Detects the command type
      * @return the type of command
      */
     private CommandType detectCommandType() {
-        if (mData.size() != 0) {
-            String data = mData.get(0).toUpperCase();
 
-            if (data.startsWith("CMD:"))
-                return CommandType.Console;
-            else if (data.startsWith("CHAT:"))
-                return CommandType.Chat;
-            else if (data.startsWith("BROADCAST:"))
-                return CommandType.Broadcast;
-            else if (data.equals("GETMAXPLAYERS"))
-                return CommandType.GetMaxPlayers;
-            else if (data.equals("GETPLAYERCOUNT"))
-                return CommandType.GetPlayerCount;
-            else if (data.equals("GETPLAYERLIST"))
-                return CommandType.GetPlayerList;
-            else if (data.startsWith("GETPLAYERREPORT:"))
-                return CommandType.GetPlayerReport;
-            else if (data.equals("GETTPS"))
-                return CommandType.GetTps;
-            else if (data.equals("GETPERFORMANCEREPORT"))
-                return CommandType.GetPerformanceReport;
-            else if (data.equals("GETMAXRAM"))
-                return CommandType.GetMaxRam;
-            else if (data.equals("GETTOTALRAM"))
-                return CommandType.GetTotalRam;
-            else if (data.equals("GETFREERAM"))
-                return CommandType.GetFreeRam;
-            else if (data.equals("GETUSEDRAM"))
-                return CommandType.GetUsedRam;
-            else if (data.equals("GETMOTD"))
-                return CommandType.GetMotd;
-            else if (data.equals("STOP"))
-                return CommandType.Stop;
-            else if (data.startsWith("SETFLAG:"))
-                return CommandType.SetFlag;
-            else if (data.equals("PING"))
-                return CommandType.Ping;
+        //Check all of our regexes first
+        Matcher matcher = CONSOLE_PATTERN.matcher(mData);
+        if (matcher.find()) {
+            mMatcher = matcher;
+            return CommandType.Console;
         }
+
+        matcher = CHAT_PATTERN.matcher(mData);
+        if (matcher.find()) {
+            mMatcher = matcher;
+            return CommandType.Chat;
+        }
+
+        matcher = BROADCAST_PATTERN.matcher(mData);
+        if (matcher.find()) {
+            mMatcher = matcher;
+            return CommandType.Broadcast;
+        }
+
+        matcher = PLAYER_REPORT_PATTERN.matcher(mData);
+        if (matcher.find()) {
+            mMatcher = matcher;
+            return CommandType.GetPlayerReport;
+        }
+
+        matcher = SET_FLAG_PATTERN.matcher(mData);
+        if (matcher.find()) {
+            mMatcher = matcher;
+            return CommandType.SetFlag;
+        }
+
+        //Then check against static stuff
+        String data = mData.toUpperCase();
+
+         if (data.equals("[REQUEST]:[TYPE:MAXPLAYERS]"))
+            return CommandType.GetMaxPlayers;
+        else if (data.equals("[REQUEST]:[TYPE:PLAYERCOUNT]"))
+            return CommandType.GetPlayerCount;
+        else if (data.equals("[REQUEST]:[TYPE:PLAYERLIST]"))
+            return CommandType.GetPlayerList;
+        else if (data.equals("[REQUEST]:[TYPE:TPS]"))
+            return CommandType.GetTps;
+        else if (data.equals("[REQUEST]:[TYPE:PERFORMANCE]"))
+            return CommandType.GetPerformanceReport;
+        else if (data.equals("[REQUEST]:[TYPE:MAXRAM]"))
+            return CommandType.GetMaxRam;
+        else if (data.equals("[REQUEST]:[TYPE:TOTALRAM]"))
+            return CommandType.GetTotalRam;
+        else if (data.equals("[REQUEST]:[TYPE:FREERAM]"))
+            return CommandType.GetFreeRam;
+        else if (data.equals("[REQUEST]:[TYPE:USEDRAM]"))
+            return CommandType.GetUsedRam;
+        else if (data.equals("[REQUEST]:[TYPE:MOTD]"))
+            return CommandType.GetMotd;
+         else if (data.equals("[REQUEST]:[TYPE:LOG]"))
+             return CommandType.GetLog;
+        else if (data.equals("[STOP]"))
+            return CommandType.Stop;
+        else if (data.equals("[PING]"))
+            return CommandType.Ping;
 
         return CommandType.Unknown;
-    }
-
-    /**
-     * Checks if this command has enough data to be executed
-     * @return true if the command is ready, false otherwise
-     */
-    private boolean checkIfReady() {
-        switch (mType) {
-            case Chat: {
-                return (mData.size() >= 2);
-            }
-            default: {
-                return true;
-            }
-        }
     }
 }

@@ -1,0 +1,3 @@
+name: MCSCP-Plugin
+main: com.gmail.undifinedmaniac.mcscpplugin.McscpPlugin
+version: 1.7.10

@@ -5,6 +5,7 @@ import com.gmail.undifinedmaniac.mcscpplugin.McscpPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +36,6 @@ public class McscpCommandInterface implements IMcscpCommandInterface {
         Bukkit.getServer().dispatchCommand(mSender, cmd);
         LinkedList<String> messages = mSender.retrieveMessages();
         StringBuilder response = new StringBuilder();
-        response.append("CMDRESPONSE:");
         for (String message : messages) {
             response.append(message);
         }
@@ -95,48 +95,30 @@ public class McscpCommandInterface implements IMcscpCommandInterface {
         Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
         List<String> playerNames = new ArrayList<>();
         for (Player player : players)
-            playerNames.add(player.getDisplayName());
+            playerNames.add(player.getPlayerListName());
         return playerNames;
     }
 
     /**
      * Get a player report containing lots of info about a player
      * @param playerName the player username
-     * @return the string player report
+     * @return the player report
      */
     @Override
-    public String getPlayerReport(String playerName) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("BEGINPLAYERREPORT");
-        builder.append("\r\n");
+    public PlayerReport getPlayerReport(String playerName) {
+        PlayerReport report = new PlayerReport();
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             if (player.getPlayerListName().equals(playerName)) {
-                builder.append("NAME:");
-                builder.append(playerName);
-                builder.append("\r\n");
-                builder.append("IP:");
-                builder.append(player.getAddress().toString());
-                builder.append("\r\n");
-                builder.append("MAXHEALTH:");
-                builder.append(player.getMaxHealth());
-                builder.append("\r\n");
-                builder.append("HEALTH:");
-                builder.append(player.getHealth());
-                builder.append("\r\n");
-                builder.append("HUNGER:");
-                builder.append(player.getFoodLevel());
-                builder.append("\r\n");
-                builder.append("LEVEL:");
-                builder.append(player.getLevel());
-                builder.append("\r\n");
-                builder.append("WORLD:");
-                builder.append(player.getWorld().getName());
-                builder.append("\r\n");
-                break;
+                report.name = player.getDisplayName();
+                report.ip = player.getAddress().toString();
+                report.maxHealth = Double.toString(player.getMaxHealth());
+                report.health = Double.toString(player.getHealth());
+                report.hunger = Double.toString(player.getFoodLevel());
+                report.level = Double.toString(player.getLevel());
+                report.world = player.getWorld().getName();
             }
         }
-        builder.append("ENDPLAYERREPORT");
-        return builder.toString();
+        return report;
     }
 
     /**

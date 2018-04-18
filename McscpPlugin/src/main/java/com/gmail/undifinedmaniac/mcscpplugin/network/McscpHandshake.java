@@ -1,5 +1,7 @@
 package com.gmail.undifinedmaniac.mcscpplugin.network;
 
+import org.bukkit.command.CommandSender;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,76 +10,71 @@ import java.util.regex.Pattern;
  */
 public class McscpHandshake {
 
-    private static final String PROTOCOL = "MCSCPV1.0";
+    private static final String PROTOCOL = "MCSCPV1.0.0";
 
-    private static final Pattern PROTOCOL_PATTERN = Pattern.compile("^P:(.+?)(?:\\s|$)");
+    private static final Pattern PROTOCOL_PATTERN = Pattern.compile("\\[HANDSHAKE]:\\[PROTOCOL:(.*)]");
 
-    private Stage mStage = Stage.Idle;
+    private State mState = State.Idle;
 
-    private enum Stage {
+    private enum State {
         Idle, SentProtocol,
-        VerifyClientProtocol, StartSession;
+        VerifiedClientProtocol, Complete,
+        Failed;
     }
 
-    public McscpHandshake() {
+    McscpHandshake() {
 
-    }
-
-    /**
-     * Gets the initial message to send to the client
-     * once it is connected
-     * @return the first message to send
-     */
-    public String connected() {
-        mStage = Stage.SentProtocol;
-        StringBuilder builder = new StringBuilder();
-        builder.append("P:");
-        builder.append(PROTOCOL);
-        builder.append(" HI");
-        return builder.toString();
     }
 
     /**
-     * Gets the next message to send to the client during the
-     * handshake
-     * @param message the last message received from the client
-     * @return the next message to send to the client
+     * Gets the first message in the handshake
+     * @return The first message
      */
-    public String messageReceived(String message) {
-        if (mStage == Stage.SentProtocol) {
-            mStage = Stage.VerifyClientProtocol;
-            Matcher matcher = PROTOCOL_PATTERN.matcher(message);
-            if (matcher.find()) {
-                String clientProtocol = matcher.group(1);
-                if (clientProtocol != null && verifyClientProtocol(clientProtocol)) {
-                    return "GOOD TO GO";
-                }
-            }
-        } else if (mStage == Stage.VerifyClientProtocol) {
-            if (message.equals("GOOD TO GO")) {
-                mStage = Stage.StartSession;
-                return "SESSION STARTED";
-            }
+    public String start() {
+        if (mState == State.Idle) {
+            mState = State.SentProtocol;
+            return String.format("[HANDSHAKE]:[PROTOCOL:%s]", PROTOCOL);
         }
+        return "";
+    }
 
-        return null;
+    public boolean processNewData(String data) {
+        switch(mState) {
+            case SentProtocol:
+                Matcher matcher = PROTOCOL_PATTERN.matcher(data);
+                if (matcher.find()) {
+                    String clientProtocol = matcher.group(1);
+                    if (clientProtocol.equals(PROTOCOL)) {
+                        mState = State.VerifiedClientProtocol;
+                        return true;
+                    } else {
+                        mState = State.Failed;
+                        return false;
+                    }
+                }
+                break;
+            case VerifiedClientProtocol:
+                mState = State.Complete;
+                return data.toUpperCase().equals("[HANDSHAKE]:[READY]");
+        }
+        return false;
+    }
+
+    public String getNextMessage() {
+        switch(mState) {
+            case VerifiedClientProtocol:
+                return "[HANDSHAKE]:[READY]";
+            case Complete:
+                return "[HANDSHAKE]:[COMPLETE]";
+        }
+        return "";
     }
 
     /**
      * Checks if the handshake is finished
      * @return true if finished, otherwise false
      */
-    public boolean finished() {
-        return mStage == Stage.StartSession;
-    }
-
-    /**
-     * Verifies that a client's MCSCP version is
-     * compatible with this server
-     * @param protocol the client's protocol
-     * @return true if compatible, otherwise false
-     */
-    private boolean verifyClientProtocol(String protocol) {
-        return (protocol.equals(PROTOCOL));
+    public boolean complete() {
+        return mState == State.Complete;
     }
 }

@@ -2,6 +2,11 @@ package com.gmail.undifinedmaniac.mcscpplugin.command;
 
 import java.util.Collection;
 
+class PlayerReport {
+    public String name, ip, maxHealth, health,
+                  hunger, level, world;
+}
+
 /**
  * An interface for the MCSCP command interface
  */
@@ -12,7 +17,7 @@ public interface IMcscpCommandInterface {
     int getMaxPlayers();
     int getPlayerCount();
     Collection<String> getPlayerList();
-    String getPlayerReport(String playerName);
+    PlayerReport getPlayerReport(String playerName);
     float getTps();
     double getMaxRam();
     double getTotalRam();

@@ -36,7 +36,7 @@ public class McscpClient implements Listener {
 
     public enum Flag {
         ReportPlayerJoin, ReportPlayerLeave, CmdResponse,
-        ReportChatUpdate, ReportPlayerDeath
+        ReportChatUpdate, ReportPlayerDeath, SendServerLog
     }
 
     private McscpTcpServer mServer;
@@ -88,8 +88,8 @@ public class McscpClient implements Listener {
     /**
      * Start the handshake by sending the first message to the client
      */
-    public void startSession() {
-        sendToClient(mHandshake.connected());
+    public void startHandshake() {
+        sendToClient(mHandshake.start());
     }
 
     /**
@@ -162,39 +162,32 @@ public class McscpClient implements Listener {
         message = message.trim();
 
         //If the handshake is not finished, continue with it
-        if (!mHandshake.finished()) {
-            String reply = mHandshake.messageReceived(message);
-
-            if (reply == null)
+        if (!mHandshake.complete()) {
+            if (mHandshake.processNewData(message)) {
+                String reply = mHandshake.getNextMessage();
+                if (!reply.equals(""))
+                    sendToClient(reply);
+            } else {
                 mServer.dropClient(this);
-            else
-                sendToClient(reply);
+            }
         } else {
             //Work on command processing - if there is no current command
             // a new one will be created. Otherwise, new data will be added
             // to the existing command
-            if (mCommand == null) {
-                mCommand = new McscpCommand(this, message);
-            } else {
-                mCommand.addData(message);
-            }
+            mCommand = new McscpCommand(this, message);
 
-            //Execute the command once it is ready
-            if (mCommand.isReady()) {
-                McscpCommandProcessor.getInstance().processCommand(mCommand);
-                //After the command is finished, check if it has data for our client
-                if (mCommand.hasReply()) {
-                    boolean replyEnabled = true;
+            McscpCommandProcessor.getInstance().processCommand(mCommand);
 
-                    //Do not send data from a console command if the CmdResponse flag is false
-                    if (mCommand.getType() == McscpCommand.CommandType.Console &&
-                            !getFlag(Flag.CmdResponse))
-                        replyEnabled = false;
+            if (mCommand.hasReply()) {
+                boolean replyEnabled = true;
 
-                    if (replyEnabled)
-                        sendToClient(mCommand.getReply());
-                }
-                mCommand = null;
+                //Do not send data from a console command if the CmdResponse flag is false
+                if (mCommand.getType() == McscpCommand.CommandType.Console &&
+                        !getFlag(Flag.CmdResponse))
+                    replyEnabled = false;
+
+                if (replyEnabled)
+                    sendToClient(mCommand.getReply());
             }
         }
     }
@@ -230,8 +223,9 @@ public class McscpClient implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (getFlag(Flag.ReportPlayerJoin) && mHandshake.finished()) {
-            sendToClient("EVENT:PLAYERJOIN:" + event.getPlayer().getDisplayName());
+        if (getFlag(Flag.ReportPlayerJoin) && mHandshake.complete()) {
+            sendToClient(String.format("[EVENT]:[TYPE:PLAYERJOIN]:[USERNAME:%s]",
+                    event.getPlayer().getDisplayName()));
         }
     }
 
@@ -241,8 +235,9 @@ public class McscpClient implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (getFlag(Flag.ReportPlayerLeave) && mHandshake.finished()) {
-            sendToClient("EVENT:PLAYERLEAVE:" + event.getPlayer().getDisplayName());
+        if (getFlag(Flag.ReportPlayerLeave) && mHandshake.complete()) {
+            sendToClient(String.format("[EVENT]:[TYPE:PLAYERLEAVE]:[USERNAME:%s]",
+                    event.getPlayer().getDisplayName()));
         }
     }
 
@@ -252,9 +247,9 @@ public class McscpClient implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onChatEvent(AsyncPlayerChatEvent event) {
-        if (getFlag(Flag.ReportChatUpdate) && mHandshake.finished()) {
-            sendToClient("EVENT:CHATUPDATE:" + event.getPlayer().getDisplayName() +
-                    " " + event.getMessage());
+        if (getFlag(Flag.ReportChatUpdate) && mHandshake.complete()) {
+            sendToClient(String.format("[EVENT]:[TYPE:CHATUPDATE]:[USERNAME:%s]:[MESSAGE:%s]",
+                    event.getPlayer().getDisplayName(), event.getMessage()));
         }
     }
 
@@ -264,9 +259,15 @@ public class McscpClient implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (getFlag(Flag.ReportPlayerDeath) && mHandshake.finished()) {
-            sendToClient("EVENT:PLAYERDEATH:" + event.getDeathMessage());
+        if (getFlag(Flag.ReportPlayerDeath) && mHandshake.complete()) {
+            sendToClient(String.format("[EVENT]:[TYPE:PLAYERDEATH]:[MESSAGE:%s]",
+                    event.getDeathMessage()));
         }
+    }
+
+    public void logEvent(String newData) {
+        if (getFlag(Flag.SendServerLog) && mHandshake.complete())
+            sendToClient(String.format("[LOG]:[DATA:%s]", newData));
     }
 
     /**
