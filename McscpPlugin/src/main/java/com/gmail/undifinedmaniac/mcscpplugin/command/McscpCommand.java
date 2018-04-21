@@ -1,10 +1,7 @@
 package com.gmail.undifinedmaniac.mcscpplugin.command;
 
 import com.gmail.undifinedmaniac.mcscpplugin.network.McscpClient;
-import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,15 +11,12 @@ import java.util.regex.Pattern;
 public class McscpCommand {
 
     public enum CommandType {
-        Console, Chat, Broadcast, GetMaxPlayers, GetPlayerCount, GetPlayerList,
-        GetPlayerReport, GetTps, GetPerformanceReport, GetMaxRam, GetTotalRam,
-        GetFreeRam, GetUsedRam, GetMotd, GetLog, Stop, SetFlag, Ping, Unknown
+        Console, Chat, Broadcast, Stop, SetFlag, Ping, Unknown
     }
 
     private static Pattern CONSOLE_PATTERN = Pattern.compile("(?i)\\[CMD]:\\[CONTENT:(.*)]"),
                            CHAT_PATTERN = Pattern.compile("(?i)\\[MSG]:\\[SENDER:(.*?)]:\\[CONTENT:(.*)]"),
                            BROADCAST_PATTERN = Pattern.compile("(?i)\\[BROADCAST]:\\[CONTENT:(.*)]"),
-                           PLAYER_REPORT_PATTERN = Pattern.compile("(?i)\\[REQUEST]:\\[TYPE:PLAYERREPORT]:\\[PLAYER:(.*)]"),
                            SET_FLAG_PATTERN = Pattern.compile("(?i)\\[SETFLAG]:\\[NAME:(.*)]:\\[VALUE:(.*)]");
 
     private McscpClient mClient;
@@ -119,12 +113,6 @@ public class McscpCommand {
             return CommandType.Broadcast;
         }
 
-        matcher = PLAYER_REPORT_PATTERN.matcher(mData);
-        if (matcher.find()) {
-            mMatcher = matcher;
-            return CommandType.GetPlayerReport;
-        }
-
         matcher = SET_FLAG_PATTERN.matcher(mData);
         if (matcher.find()) {
             mMatcher = matcher;
@@ -134,29 +122,7 @@ public class McscpCommand {
         //Then check against static stuff
         String data = mData.toUpperCase();
 
-         if (data.equals("[REQUEST]:[TYPE:MAXPLAYERS]"))
-            return CommandType.GetMaxPlayers;
-        else if (data.equals("[REQUEST]:[TYPE:PLAYERCOUNT]"))
-            return CommandType.GetPlayerCount;
-        else if (data.equals("[REQUEST]:[TYPE:PLAYERLIST]"))
-            return CommandType.GetPlayerList;
-        else if (data.equals("[REQUEST]:[TYPE:TPS]"))
-            return CommandType.GetTps;
-        else if (data.equals("[REQUEST]:[TYPE:PERFORMANCE]"))
-            return CommandType.GetPerformanceReport;
-        else if (data.equals("[REQUEST]:[TYPE:MAXRAM]"))
-            return CommandType.GetMaxRam;
-        else if (data.equals("[REQUEST]:[TYPE:TOTALRAM]"))
-            return CommandType.GetTotalRam;
-        else if (data.equals("[REQUEST]:[TYPE:FREERAM]"))
-            return CommandType.GetFreeRam;
-        else if (data.equals("[REQUEST]:[TYPE:USEDRAM]"))
-            return CommandType.GetUsedRam;
-        else if (data.equals("[REQUEST]:[TYPE:MOTD]"))
-            return CommandType.GetMotd;
-         else if (data.equals("[REQUEST]:[TYPE:LOG]"))
-             return CommandType.GetLog;
-        else if (data.equals("[STOP]"))
+        if (data.equals("[STOP]"))
             return CommandType.Stop;
         else if (data.equals("[PING]"))
             return CommandType.Ping;

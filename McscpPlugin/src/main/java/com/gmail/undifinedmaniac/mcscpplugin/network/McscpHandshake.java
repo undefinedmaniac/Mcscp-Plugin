@@ -1,7 +1,5 @@
 package com.gmail.undifinedmaniac.mcscpplugin.network;
 
-import org.bukkit.command.CommandSender;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

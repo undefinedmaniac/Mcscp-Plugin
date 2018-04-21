@@ -1,4 +1,4 @@
-package com.gmail.undifinedmaniac.mcscpplugin;
+package com.gmail.undifinedmaniac.mcscpplugin.bukkit;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

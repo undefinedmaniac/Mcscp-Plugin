@@ -1,16 +1,8 @@
 package com.gmail.undifinedmaniac.mcscpplugin.network;
 
 import com.gmail.undifinedmaniac.mcscpplugin.command.McscpCommand;
-import com.gmail.undifinedmaniac.mcscpplugin.command.McscpCommandProcessor;
-
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import com.gmail.undifinedmaniac.mcscpplugin.table.McscpPlayerTable;
+import com.gmail.undifinedmaniac.mcscpplugin.table.McscpServerTable;
 
 import java.util.HashMap;
 import java.util.Queue;
@@ -27,16 +19,17 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.charset.StandardCharsets;
 import java.nio.channels.ClosedChannelException;
+import java.util.logging.Level;
 
 /**
  * Represents a single client connected to the server
  * Handles read / write events, session flags, and command requests
  */
-public class McscpClient implements Listener {
+public class McscpClient {
 
     public enum Flag {
         ReportPlayerJoin, ReportPlayerLeave, CmdResponse,
-        ReportChatUpdate, ReportPlayerDeath, SendServerLog
+        ReportChat, ReportPlayerDeath, SendServerLog
     }
 
     private McscpTcpServer mServer;
@@ -48,7 +41,7 @@ public class McscpClient implements Listener {
     private McscpCommand mCommand;
     private HashMap<Flag, Boolean> mFlags;
 
-    public McscpClient(McscpTcpServer server, SocketChannel channel, SelectionKey key) {
+    McscpClient(McscpTcpServer server, SocketChannel channel, SelectionKey key) {
         mServer = server;
         mChannel = channel;
         mKey = key;
@@ -57,8 +50,46 @@ public class McscpClient implements Listener {
         mHandshake = new McscpHandshake();
         mCommand = null;
         mFlags = new HashMap<>();
+    }
 
-        Bukkit.getServer().getPluginManager().registerEvents(this, mServer.getPlugin());
+    public static Flag getFlagType(String flagName) {
+        switch (flagName.toUpperCase()) {
+            case "REPORTPLAYERJOIN": {
+                return Flag.ReportPlayerJoin;
+            }
+            case "REPORTPLAYERLEAVE": {
+                return Flag.ReportPlayerLeave;
+            }
+            case "CMDRESPONSE": {
+                return Flag.CmdResponse;
+            }
+            case "REPORTCHAT": {
+                return Flag.ReportChat;
+            }
+            case "REPORTPLAYERDEATH": {
+                return Flag.ReportPlayerDeath;
+            }
+            case "SENDSERVERLOG": {
+                return Flag.SendServerLog;
+            }
+            default: {
+                return null;
+            }
+        }
+    }
+
+    public static Boolean convertStringToBool(String value) {
+        switch (value.toUpperCase()) {
+            case "TRUE": {
+                return true;
+            }
+            case "FALSE": {
+                return false;
+            }
+            default: {
+                return null;
+            }
+        }
     }
 
     /**
@@ -86,30 +117,6 @@ public class McscpClient implements Listener {
     }
 
     /**
-     * Start the handshake by sending the first message to the client
-     */
-    public void startHandshake() {
-        sendToClient(mHandshake.start());
-    }
-
-    /**
-     * Disconnect from the client
-     */
-    public void close() {
-        SocketAddress remoteAddress = address();
-        mServer.getPlugin().printMsg("Client disconnected: " + remoteAddress);
-
-        try {
-            mChannel.close();
-        } catch (IOException error) {
-            mServer.getPlugin().printMsg("ERROR: IOException while closing socket from disconnected client: " +
-                    remoteAddress);
-        }
-
-        mKey.cancel();
-    }
-
-    /**
      * Get the value of a session flag
      * @param flag the flag to check
      * @return true if enabled, otherwise false
@@ -132,6 +139,30 @@ public class McscpClient implements Listener {
     }
 
     /**
+     * Start the handshake by sending the first message to the client
+     */
+    public void startHandshake() {
+        sendToClient(mHandshake.start());
+    }
+
+    /**
+     * Disconnect from the client
+     */
+    public void close() {
+        SocketAddress remoteAddress = address();
+        mServer.getDataFetcher().logMessage(Level.INFO,"Client disconnected: " + remoteAddress);
+
+        try {
+            mChannel.close();
+        } catch (IOException error) {
+            mServer.getDataFetcher().logMessage(Level.SEVERE,"ERROR: IOException while closing socket from disconnected client: " +
+                    remoteAddress);
+        }
+
+        mKey.cancel();
+    }
+
+    /**
      * Handles a read event from the client by continuing the handshake /
      * processing commands
      */
@@ -144,7 +175,7 @@ public class McscpClient implements Listener {
             //Read from the client
             numberOfBytesRead = mChannel.read(buffer);
         } catch (IOException error) {
-            mServer.getPlugin().printMsg("ERROR: IOException while reading data from client: " +
+            mServer.getDataFetcher().logMessage(Level.SEVERE, "ERROR: IOException while reading data from client: " +
                     address());
         }
 
@@ -165,8 +196,13 @@ public class McscpClient implements Listener {
         if (!mHandshake.complete()) {
             if (mHandshake.processNewData(message)) {
                 String reply = mHandshake.getNextMessage();
-                if (!reply.equals(""))
+
+                if (!reply.isEmpty())
                     sendToClient(reply);
+
+                //Request all the table data once we are finished with the handshake
+                if (mHandshake.complete())
+                    mServer.requestAllTableData(this);
             } else {
                 mServer.dropClient(this);
             }
@@ -176,7 +212,7 @@ public class McscpClient implements Listener {
             // to the existing command
             mCommand = new McscpCommand(this, message);
 
-            McscpCommandProcessor.getInstance().processCommand(mCommand);
+            mServer.getCommandProcessor().processCommand(mCommand);
 
             if (mCommand.hasReply()) {
                 boolean replyEnabled = true;
@@ -203,7 +239,7 @@ public class McscpClient implements Listener {
             //Process as much of the outgoing buffer as we can
             finished = processOutgoingBuffer();
         } catch (IOException error) {
-            mServer.getPlugin().printMsg("ERROR: IOException while processing buffered writes for the client: " +
+            mServer.getDataFetcher().logMessage(Level.SEVERE, "ERROR: IOException while processing buffered writes for the client: " +
                     address());
         }
 
@@ -217,52 +253,35 @@ public class McscpClient implements Listener {
         }
     }
 
-    /**
-     * Event handler for player join events
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (getFlag(Flag.ReportPlayerJoin) && mHandshake.complete()) {
-            sendToClient(String.format("[EVENT]:[TYPE:PLAYERJOIN]:[USERNAME:%s]",
-                    event.getPlayer().getDisplayName()));
+    public void serverTableUpdate(McscpServerTable.Key key, String valueString) {
+        if (mHandshake.complete()) {
+            sendToClient(String.format("[UPDATE]:[KEY:%s]:[VALUE:%s]", key.toString().toUpperCase(), valueString));
+        }
+    }
+    public void playerTableUpdate(String uuid, McscpPlayerTable.Key key, String valueString) {
+        if (mHandshake.complete()) {
+            sendToClient(String.format("[UPDATE]:[KEY:PLAYER:%s]:[UUID:%s]:[VALUE:%s]", key.toString().toUpperCase(), uuid, valueString));
         }
     }
 
-    /**
-     * Event handler for player leave events
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        if (getFlag(Flag.ReportPlayerLeave) && mHandshake.complete()) {
-            sendToClient(String.format("[EVENT]:[TYPE:PLAYERLEAVE]:[USERNAME:%s]",
-                    event.getPlayer().getDisplayName()));
-        }
+    public void playerJoinEvent(String uuid) {
+        if (getFlag(Flag.ReportPlayerJoin) && mHandshake.complete())
+            sendToClient(String.format("[EVENT]:[TYPE:PLAYERJOIN]:[UUID:%s]", uuid));
     }
 
-    /**
-     * Event handler for chat update events
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onChatEvent(AsyncPlayerChatEvent event) {
-        if (getFlag(Flag.ReportChatUpdate) && mHandshake.complete()) {
-            sendToClient(String.format("[EVENT]:[TYPE:CHATUPDATE]:[USERNAME:%s]:[MESSAGE:%s]",
-                    event.getPlayer().getDisplayName(), event.getMessage()));
-        }
+    public void playerLeaveEvent(String uuid) {
+        if (getFlag(Flag.ReportPlayerLeave) && mHandshake.complete())
+            sendToClient(String.format("[EVENT]:[TYPE:PLAYERLEAVE]:[UUID:%s]", uuid));
     }
 
-    /**
-     * Event handler for player death events
-     * @param event the event
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        if (getFlag(Flag.ReportPlayerDeath) && mHandshake.complete()) {
-            sendToClient(String.format("[EVENT]:[TYPE:PLAYERDEATH]:[MESSAGE:%s]",
-                    event.getDeathMessage()));
-        }
+    public void chatEvent(String uuid, String message) {
+        if (getFlag(Flag.ReportChat) && mHandshake.complete())
+            sendToClient(String.format("[EVENT]:[TYPE:CHAT]:[UUID:%s]:[MESSAGE:%s]", uuid, message));
+    }
+
+    public void deathEvent(String uuid, String message) {
+        if (getFlag(Flag.ReportPlayerDeath) && mHandshake.complete())
+            sendToClient(String.format("[EVENT]:[TYPE:DEATH]:[UUID:%s]:[MESSAGE:%s]", uuid, message));
     }
 
     public void logEvent(String newData) {
@@ -281,7 +300,7 @@ public class McscpClient implements Listener {
             //Attempt to send the message to the client
             success = write(message);
         } catch (IOException error) {
-            mServer.getPlugin().printMsg("ERROR: IOException while sending data to client: " +
+            mServer.getDataFetcher().logMessage(Level.SEVERE, "ERROR: IOException while sending data to client: " +
                     address());
         }
 

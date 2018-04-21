@@ -1,13 +1,11 @@
 package com.gmail.undifinedmaniac.mcscpplugin.network;
 
-import com.gmail.undifinedmaniac.mcscpplugin.McscpPlugin;
+import com.gmail.undifinedmaniac.mcscpplugin.command.McscpCommandProcessor;
+import com.gmail.undifinedmaniac.mcscpplugin.interfaces.IMcscpDataFetcher;
+import com.gmail.undifinedmaniac.mcscpplugin.table.McscpPlayerTable;
+import com.gmail.undifinedmaniac.mcscpplugin.table.McscpServerTable;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import java.io.IOException;
 
@@ -19,38 +17,47 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
 
 /**
  * This class contains a TCP listen server which accepts
  * incoming connections from MCSCP clients
  */
-public class McscpTcpServer extends BukkitRunnable {
+public class McscpTcpServer {
 
     private InetSocketAddress mAddress;
     private Selector mSelector;
     private SelectionKey mServerKey;
     private HashMap<SelectionKey, McscpClient> mClients;
-    private McscpPlugin mPlugin;
+    private IMcscpDataFetcher mFetcher;
+    private McscpCommandProcessor mCommandProcessor;
 
-    public McscpTcpServer(McscpPlugin plugin, String address, int port) {
+    private McscpServerTable mServerTable;
+    private Map<String, McscpPlayerTable> mPlayerTables;
+    private int mTickCount = 0;
+
+    public McscpTcpServer(IMcscpDataFetcher fetcher, String address, int port) {
         mAddress = new InetSocketAddress(address, port);
         mClients = new HashMap<>();
-        mPlugin = plugin;
+        mFetcher = fetcher;
+        mCommandProcessor = new McscpCommandProcessor(mFetcher);
+        mServerTable = new McscpServerTable(mFetcher, this);
+        mServerTable.updateKeys();
+        mPlayerTables = new HashMap<>();
     }
 
     /**
      * Processes events (AKA accept connections, notify clients
      * about read and write events)
      */
-    @Override
-    public void run() {
+    public void processEvents() {
 
         int numberOfKeys = 0;
 
         try {
             numberOfKeys = mSelector.selectNow();
         } catch (IOException error) {
-            mPlugin.printMsg("ERROR: IOException while processing events");
+            mFetcher.logMessage(Level.SEVERE, "ERROR: IOException while processing events");
         }
 
         if (numberOfKeys > 0) {
@@ -73,22 +80,33 @@ public class McscpTcpServer extends BukkitRunnable {
                     writeEvent(key);
             }
         }
+
+        if (mTickCount >= 20) {
+            mTickCount = 0;
+            if (mClients.size() != 0) {
+                mServerTable.updateKeys();
+                for (McscpPlayerTable table : mPlayerTables.values())
+                    table.updateKeys();
+            }
+        }
+
+        mTickCount++;
     }
 
     /**
      * Get the selector from the instance
-     * @return
+     * @return the selector
      */
     public Selector getSelector() {
         return mSelector;
     }
 
-    /**
-     * Get the McscpPlugin
-     * @return the plugin
-     */
-    public McscpPlugin getPlugin() {
-        return mPlugin;
+    public IMcscpDataFetcher getDataFetcher() {
+        return mFetcher;
+    }
+
+    public McscpCommandProcessor getCommandProcessor() {
+        return mCommandProcessor;
     }
 
     /**
@@ -105,10 +123,10 @@ public class McscpTcpServer extends BukkitRunnable {
             serverChannel.socket().bind(mAddress);
             mServerKey = serverChannel.register(mSelector, SelectionKey.OP_ACCEPT);
 
-            mPlugin.printMsg("TCP server online at address: " + mAddress.getHostName() +
+            mFetcher.logMessage(Level.INFO,"TCP server online at address: " + mAddress.getHostName() +
                               " and port: " + mAddress.getPort());
         } catch (IOException error) {
-            mPlugin.printMsg("ERROR: IOException while starting TCP server on address: " +
+            mFetcher.logMessage(Level.SEVERE,"ERROR: IOException while starting TCP server on address: " +
                     mAddress.getHostName() + " and port: " + mAddress.getPort());
         }
     }
@@ -128,12 +146,26 @@ public class McscpTcpServer extends BukkitRunnable {
         try {
             mSelector.close();
         } catch (IOException error) {
-            mPlugin.printMsg("ERROR: IOException while closing server");
+            mFetcher.logMessage(Level.SEVERE,"ERROR: IOException while closing server");
         }
 
-        mPlugin.printMsg("TCP server offline. Goodbye!");
+        mFetcher.logMessage(Level.INFO,"TCP server offline. Goodbye!");
+    }
 
-        this.cancel();
+    public void requestAllTableData(McscpClient client) {
+        Map<McscpServerTable.Key, String> data = mServerTable.getAllData();
+        for (McscpServerTable.Key key : data.keySet())
+            client.serverTableUpdate(key, data.get(key));
+    }
+
+    public void serverTableUpdate(McscpServerTable.Key key, String valueString) {
+        for (McscpClient client : mClients.values())
+            client.serverTableUpdate(key, valueString);
+    }
+
+    public void playerTableUpdate(String uuid, McscpPlayerTable.Key key, String valueString) {
+        for (McscpClient client : mClients.values())
+            client.playerTableUpdate(uuid, key, valueString);
     }
 
     /**
@@ -143,6 +175,33 @@ public class McscpTcpServer extends BukkitRunnable {
     public void dropClient(McscpClient client) {
         client.close();
         mClients.remove(client.key());
+    }
+
+    public void playerJoinEvent(String uuid) {
+        for (McscpClient client : mClients.values())
+            client.playerJoinEvent(uuid);
+
+        McscpPlayerTable table = new McscpPlayerTable(uuid, mFetcher, this);
+        mPlayerTables.put(uuid, table);
+        table.updateKeys();
+    }
+
+    public void playerLeaveEvent(String uuid) {
+
+        mPlayerTables.remove(uuid);
+
+        for (McscpClient client : mClients.values())
+            client.playerLeaveEvent(uuid);
+    }
+
+    public void chatEvent(String uuid, String message) {
+        for (McscpClient client : mClients.values())
+            client.chatEvent(uuid, message);
+    }
+
+    public void deathEvent(String uuid, String message) {
+        for (McscpClient client : mClients.values())
+            client.deathEvent(uuid, message);
     }
 
     public void logEvent(String newData) {
@@ -162,19 +221,19 @@ public class McscpTcpServer extends BukkitRunnable {
             channel.configureBlocking(false);
             Socket socket = channel.socket();
             SocketAddress remoteAddress = socket.getRemoteSocketAddress();
-            mPlugin.printMsg("Client connected: " + remoteAddress);
+            mFetcher.logMessage(Level.INFO, "Client connected: " + remoteAddress);
             SelectionKey clientKey = channel.register(mSelector, SelectionKey.OP_READ);
             McscpClient client = new McscpClient(this, channel, clientKey);
             mClients.put(clientKey, client);
             client.startHandshake();
         } catch (IOException error) {
-            mPlugin.printMsg("ERROR: IOException while accepting client connection");
+            mFetcher.logMessage(Level.SEVERE,"ERROR: IOException while accepting client connection");
         }
     }
 
     /**
      * Notifies a client that a read event has occurred
-     * @param key
+     * @param key the key of the event
      */
     private void readEvent(SelectionKey key) {
         McscpClient client = mClients.get(key);
@@ -183,7 +242,7 @@ public class McscpTcpServer extends BukkitRunnable {
 
     /**
      * Notifies a client that write event has occurred
-     * @param key
+     * @param key key the key of the event
      */
     private void writeEvent(SelectionKey key) {
         McscpClient client = mClients.get(key);
@@ -199,7 +258,7 @@ public class McscpTcpServer extends BukkitRunnable {
         try {
             serverChannel.close();
         } catch (IOException error) {
-            mPlugin.printMsg("ERROR: IOException while closing server");
+            mFetcher.logMessage(Level.SEVERE,"ERROR: IOException while closing server");
         }
 
         mServerKey.cancel();
