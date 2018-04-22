@@ -1,1 +1,2 @@
 # Mcscp-Plugin
+This is a Bukkit plugin that implements the <a href="https://docs.google.com/spreadsheets/d/1frGQdqzLz9wJeY-nf20zOYkastzBKq3O8vzlkrTdRmo/edit?usp=sharing">MCSCP protocol</a> to allow advanced remote control over a Minecraft server. It creates a TCP server and allows MCSCP compatible clients to connect and talk. This enables cool stuff like being able to send commands to the server console, broadcast messages ingame, and read information about ingame players in real time.
