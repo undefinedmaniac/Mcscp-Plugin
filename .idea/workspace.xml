@@ -2,50 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f5ab7a47-f42b-45a8-b900-8103be089ad3" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitDataFetcher.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitMcscpTcpServer.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitPlayerData.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitTpsCalculator.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/interfaces/IMcscpDataFetcher.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/interfaces/IMcscpPlayerData.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/table/McscpPlayerTable.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/table/McscpServerTable.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/table/McscpTableBase.java" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/LogAppender.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/McscpPlugin.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/McscpPlugin.java" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/McscpPluginConfig.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/McscpPluginConfig.java" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/CustomCommandSender.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitCommandSender.java" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/IMcscpCommandInterface.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommand.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommand.java" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandInterface.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor.java" />
+      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java" />
       <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake.java" />
       <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.java" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.java" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/src/main/resources/plugin.yml" afterPath="$PROJECT_DIR$/McscpPlugin/src/main/resources/plugin.yml" />
       <change beforePath="$PROJECT_DIR$/McscpPlugin/target/McscpPlugin-1.0-SNAPSHOT.jar" afterPath="$PROJECT_DIR$/McscpPlugin/target/McscpPlugin-1.0-SNAPSHOT.jar" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/LogAppender.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/McscpPlugin$1.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/McscpPlugin.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/McscpPluginConfig.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/CustomCommandSender.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/IMcscpCommandInterface.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommand$CommandType.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommand$CommandType.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommand.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommand.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandInterface.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor$1.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor$1.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/command/PlayerReport.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient$Flag.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient$Flag.class" />
+      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.class" />
       <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake$1.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake$1.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake$State.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake$State.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpHandshake.class" />
       <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.class" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.class" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/classes/plugin.yml" afterPath="$PROJECT_DIR$/McscpPlugin/target/classes/plugin.yml" />
-      <change beforePath="$PROJECT_DIR$/McscpPlugin/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="$PROJECT_DIR$/McscpPlugin/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/McscpPlugin/target/" />
@@ -57,7 +21,31 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="McscpClient.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="21">
+              <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
+              <folding>
+                <element signature="e#3801#3802#0" expanded="true" />
+                <element signature="e#3849#3850#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LogAppender.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="441">
+              <caret line="25" column="1" lean-forward="true" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -72,6 +60,8 @@
       <find>connected</find>
       <find>mPlugin.printMsg</find>
       <find>mServer.getPlugin().printMsg</find>
+      <find>sendtoclient</find>
+      <find>message</find>
     </findStrings>
     <replaceStrings>
       <replace>mFetcher.logMessage</replace>
@@ -100,7 +90,6 @@
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/McscpPlugin.java" />
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/LogAppender.java" />
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/resources/plugin.yml" />
-        <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java" />
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/interfaces/IMcscpCommandInterface.java" />
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/interfaces/IMcscpPlayerData.java" />
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitTpsCalculator.java" />
@@ -120,6 +109,7 @@
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/table/McscpPlayerTable.java" />
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.java" />
         <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java" />
+        <option value="$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java" />
       </list>
     </option>
   </component>
@@ -156,10 +146,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="271" />
-    <option name="y" value="50" />
-    <option name="width" value="1500" />
-    <option name="height" value="1020" />
+    <option name="width" value="1712" />
+    <option name="height" value="1392" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -179,10 +167,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
-      <pane id="AndroidView" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -272,6 +257,9 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -407,7 +395,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="271" y="50" width="1500" height="1020" extended-state="0" />
+    <frame x="0" y="0" width="1712" height="1392" extended-state="0" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -415,13 +403,13 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31241566" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21882352" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16883117" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3150358" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2928475" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25619835" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -444,6 +432,71 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#3801#3802#0" expanded="true" />
+            <element signature="e#3849#3850#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#3801#3802#0" expanded="true" />
+            <element signature="e#3849#3850#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3013#3014#0" expanded="true" />
+            <element signature="e#3045#3046#0" expanded="true" />
+            <element signature="e#3094#3095#0" expanded="true" />
+            <element signature="e#3125#3126#0" expanded="true" />
+            <element signature="e#3183#3184#0" expanded="true" />
+            <element signature="e#3223#3224#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#3801#3802#0" expanded="true" />
+            <element signature="e#3849#3850#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3013#3014#0" expanded="true" />
+            <element signature="e#3045#3046#0" expanded="true" />
+            <element signature="e#3094#3095#0" expanded="true" />
+            <element signature="e#3125#3126#0" expanded="true" />
+            <element signature="e#3183#3184#0" expanded="true" />
+            <element signature="e#3223#3224#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2415">
@@ -558,7 +611,8 @@
         <state relative-caret-position="4935">
           <caret line="271" column="0" lean-forward="false" selection-start-line="271" selection-start-column="0" selection-end-line="271" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#3801#3802#0" expanded="true" />
+            <element signature="e#3849#3850#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -577,9 +631,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="546">
           <caret line="32" column="1" lean-forward="false" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -626,16 +678,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="32" column="1" lean-forward="true" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/McscpPluginConfig.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
@@ -662,22 +704,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitMcscpTcpServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#935#936#0" expanded="false" />
-            <element signature="e#966#967#0" expanded="false" />
-            <element signature="e#1079#1080#0" expanded="false" />
-            <element signature="e#1118#1119#0" expanded="false" />
-            <element signature="e#2453#2454#0" expanded="false" />
-            <element signature="e#2494#2495#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandInterface.java" />
     <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/McscpPlugin.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -689,18 +715,6 @@
             <element signature="e#1634#1635#0" expanded="false" />
             <element signature="e#1678#1679#0" expanded="false" />
             <element signature="e#1719#1720#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#511#512#0" expanded="false" />
-            <element signature="e#545#546#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -735,11 +749,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
           <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#270#271#0" expanded="false" />
-            <element signature="e#298#299#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -793,10 +802,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/BukkitMcscpTcpServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-193">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpTcpServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1911">
-          <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+        <state relative-caret-position="591">
+          <caret line="207" column="0" lean-forward="true" selection-start-line="207" selection-start-column="0" selection-end-line="207" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3013#3014#0" expanded="true" />
@@ -811,8 +828,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/network/McscpClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        <state relative-caret-position="21">
+          <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
+          <folding>
+            <element signature="e#3801#3802#0" expanded="true" />
+            <element signature="e#3849#3850#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/command/McscpCommandProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1192">
+          <caret line="67" column="13" lean-forward="true" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#511#512#0" expanded="false" />
+            <element signature="e#545#546#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/McscpPlugin/src/main/java/com/gmail/undifinedmaniac/mcscpplugin/bukkit/LogAppender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="25" column="1" lean-forward="true" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
           <folding />
         </state>
       </provider>

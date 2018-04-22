@@ -192,38 +192,42 @@ public class McscpClient {
         String message = charBuffer.toString();
         message = message.trim();
 
-        //If the handshake is not finished, continue with it
-        if (!mHandshake.complete()) {
-            if (mHandshake.processNewData(message)) {
-                String reply = mHandshake.getNextMessage();
+        String lines[] = message.split("\\n");
 
-                if (!reply.isEmpty())
-                    sendToClient(reply);
+        for (String line : lines) {
+            //If the handshake is not finished, continue with it
+            if (!mHandshake.complete()) {
+                if (mHandshake.processNewData(line)) {
+                    String reply = mHandshake.getNextMessage();
 
-                //Request all the table data once we are finished with the handshake
-                if (mHandshake.complete())
-                    mServer.requestAllTableData(this);
+                    if (!reply.isEmpty())
+                        sendToClient(reply);
+
+                    //Request all the table data once we are finished with the handshake
+                    if (mHandshake.complete())
+                        mServer.requestAllTableData(this);
+                } else {
+                    mServer.dropClient(this);
+                }
             } else {
-                mServer.dropClient(this);
-            }
-        } else {
-            //Work on command processing - if there is no current command
-            // a new one will be created. Otherwise, new data will be added
-            // to the existing command
-            mCommand = new McscpCommand(this, message);
+                //Work on command processing - if there is no current command
+                // a new one will be created. Otherwise, new data will be added
+                // to the existing command
+                mCommand = new McscpCommand(this, line);
 
-            mServer.getCommandProcessor().processCommand(mCommand);
+                mServer.getCommandProcessor().processCommand(mCommand);
 
-            if (mCommand.hasReply()) {
-                boolean replyEnabled = true;
+                if (mCommand.hasReply()) {
+                    boolean replyEnabled = true;
 
-                //Do not send data from a console command if the CmdResponse flag is false
-                if (mCommand.getType() == McscpCommand.CommandType.Console &&
-                        !getFlag(Flag.CmdResponse))
-                    replyEnabled = false;
+                    //Do not send data from a console command if the CmdResponse flag is false
+                    if (mCommand.getType() == McscpCommand.CommandType.Console &&
+                            !getFlag(Flag.CmdResponse))
+                        replyEnabled = false;
 
-                if (replyEnabled)
-                    sendToClient(mCommand.getReply());
+                    if (replyEnabled)
+                        sendToClient(mCommand.getReply());
+                }
             }
         }
     }
@@ -298,7 +302,7 @@ public class McscpClient {
 
         try {
             //Attempt to send the message to the client
-            success = write(message);
+            success = write(message + "\r\n");
         } catch (IOException error) {
             mServer.getDataFetcher().logMessage(Level.SEVERE, "ERROR: IOException while sending data to client: " +
                     address());

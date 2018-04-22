@@ -153,9 +153,16 @@ public class McscpTcpServer {
     }
 
     public void requestAllTableData(McscpClient client) {
-        Map<McscpServerTable.Key, String> data = mServerTable.getAllData();
-        for (McscpServerTable.Key key : data.keySet())
-            client.serverTableUpdate(key, data.get(key));
+        Map<McscpServerTable.Key, String> serverData = mServerTable.getAllData();
+        for (McscpServerTable.Key key : serverData.keySet())
+            client.serverTableUpdate(key, serverData.get(key));
+
+        Set<Map.Entry<String, McscpPlayerTable>> entrySet = mPlayerTables.entrySet();
+        for (Map.Entry<String, McscpPlayerTable> entry : entrySet) {
+            Map<McscpPlayerTable.Key, String> playerData = entry.getValue().getAllData();
+            for (McscpPlayerTable.Key key : playerData.keySet())
+                client.playerTableUpdate(entry.getKey(), key, playerData.get(key));
+        }
     }
 
     public void serverTableUpdate(McscpServerTable.Key key, String valueString) {
